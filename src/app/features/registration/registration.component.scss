@@ -1,0 +1,33 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+
+  form {
+    width: 100%;
+  }
+
+  mat-card {
+    width: 100%;
+
+    mat-card-header {
+      padding: 1rem;
+    }
+
+    mat-form-field {
+      width: -webkit-fill-available;
+    }
+  }
+}
+
+.right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  padding:.5rem 0;
+}

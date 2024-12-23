@@ -1,0 +1,59 @@
+<mat-card class="example-card" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Registration</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form class="example-form" (ngSubmit)="save()" [formGroup]="formGroup">
+      <div class="row">
+        <mat-form-field class="example-full-width">
+          <mat-label>No.</mat-label>
+          <input matInput type="number" formControlName="no"/>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name"/>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <mat-label>CP #</mat-label>
+          <input matInput formControlName="cpNo"/>
+        </mat-form-field>
+      </div>
+      <div class="row right">
+        <button mat-button type="submit">Save</button>
+      </div>
+    </form>
+
+    <div class="row">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!--- Note that these columns can be defined in any order.
+                    The actual rendered columns are set as a property on the row definition" -->
+
+        <!-- Position Column -->
+        <ng-container matColumnDef="no">
+          <th mat-header-cell *matHeaderCellDef>No.</th>
+          <td mat-cell *matCellDef="let element">{{ element.no }}</td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        </ng-container>
+
+        <!-- Weight Column -->
+        <ng-container matColumnDef="cpNo">
+          <th mat-header-cell *matHeaderCellDef>CP No.</th>
+          <td mat-cell *matCellDef="let element">{{ element.cpNo }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+    <div class="row right">
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+    </div>
+  </mat-card-content>
+  <!-- <mat-card-actions class="right"> </mat-card-actions> -->
+</mat-card>
