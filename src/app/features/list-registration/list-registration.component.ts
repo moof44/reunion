@@ -25,7 +25,7 @@ import { FirestoreService } from '../../service/firestore.service';
 import { Registration } from '../../model/global.model';
 
 @Component({
-  selector: 'app-registration',
+  selector: 'app-list-registration',
   standalone: true,
   imports: [
     FormsModule,
@@ -39,32 +39,27 @@ import { Registration } from '../../model/global.model';
 
     ReactiveFormsModule,
   ],
-  templateUrl: './registration.component.html',
-  styleUrl: './registration.component.scss',
+  templateUrl: './list-registration.component.html',
+  styleUrl: './list-registration.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistrationComponent implements OnInit, AfterViewInit {
+export class ListRegistrationComponent implements OnInit {
   #fb = inject(FormBuilder);
   #firestoreService = inject(FirestoreService);
-
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   formGroup: FormGroup;
   displayedColumns: string[] = ['no', 'name', 'family'];
   dataSource = new MatTableDataSource<Registration>();
-  num = signal(0);
 
   constructor() {
     this.formGroup = this.#fb.group({
-      no: [undefined],
-      name: ['', Validators.required],
-      family: '',
+      search: [''],
     });
   }
 
   ngOnInit(): void {
     this.#firestoreService.registration.subscribe(v=>{
-      this.num.set(v.length+1);
       this.dataSource.data = v;
     })
   }
@@ -73,21 +68,40 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  async save() {
-    console.log('formGroup', this.formGroup.value);
-    if (this.formGroup.valid) {
-      try {
-        const val = this.formGroup.value;
-        val.no = this.num();
-        await this.#firestoreService
-          .addRegistration(val)
-          .then((v) => {
-            console.log('save')
-          });
-        this.formGroup.reset(); // Clear the form
-      } catch (error) {
-        console.error('Error saving data:', error);
-      }
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage(); // Go to the first page after filtering
     }
+  }
+
+  generateTxtFile() {
+    // Get the filtered data from the dataSource
+    const filteredData = this.dataSource.filteredData;
+
+    // Format the data as a string (you can customize this format)
+    let dataString = 'Name\r\n'; // Header row with Windows-style line endings
+    for (const item of filteredData) {
+      dataString += `${item.name}\r\n`; // Data rows with Windows-style line endings
+    }
+
+    // Create a Blob from the string
+    const blob = new Blob([dataString], { type: 'text/plain' });
+
+    // Create an object URL for the Blob
+    const url = window.URL.createObjectURL(blob);
+
+    // Create a temporary link element and trigger the download
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'registration_data.txt'; // Set the file name
+    document.body.appendChild(link);
+    link.click();
+
+    // Clean up
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
   }
 }

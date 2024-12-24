@@ -7,4 +7,10 @@ export const routes: Routes = [
             (m) => m.RegistrationComponent
         )
     },
+    {
+        path: 'list',
+        loadComponent: ()=> import('./features/list-registration/list-registration.component').then(
+            (m) => m.ListRegistrationComponent
+        )
+    },
 ];

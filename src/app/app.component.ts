@@ -37,8 +37,8 @@ export class AppComponent {
     },
     {
       label: 'List',
-      link: '/income',
-      icon: 'attach_money' 
+      link: '/list',
+      icon: 'home' 
     },
   ];
 }
